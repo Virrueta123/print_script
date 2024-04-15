@@ -9,7 +9,7 @@ class ticketera{
 
         $fecha_impresion = $fecha;
         
-        $nombreImpresora = "XP-80C";
+        $nombreImpresora = "XP-80CS";
         $ruta_logo = public_path('dist/images/logo/logo_ticketera.png');
         $ruta_pie = public_path('dist/images/logo/pie_ticketera.png');
 
@@ -88,7 +88,7 @@ class ticketera{
 
         $fecha_impresion = $fecha;
         
-        $nombreImpresora = "XP-80C";
+        $nombreImpresora = "XP-80CS";
         $ruta_logo = public_path('dist/images/logo/logo_ticketera.png');
         $ruta_pie = public_path('dist/images/logo/pie_ticketera.png');
  
