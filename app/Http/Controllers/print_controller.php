@@ -17,21 +17,32 @@ class print_controller extends Controller
 
         $param = $request->all();
 
-        ticketera::imprimir_gasto(
-            $param["fecha_impresion"],
-            $param["descripcion"],
-            $param["tipo_gasto"],
-            $param["code"],
-            $param["recepcionista"],
-            $param["monto"]
-        );
+        try {
+            ticketera::imprimir_gasto(
+                $param["fecha_impresion"],
+                $param["descripcion"],
+                $param["tipo_gasto"],
+                $param["code"],
+                $param["recepcionista"],
+                $param["monto"]
+            );
+    
+            return response()->json([
+                'message' => 'la impresion se ha ejecutado exitosamente',
+                'error' => '',
+                'success' => true,
+                'data' =>  '',
+            ]); 
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
 
-        return response()->json([
-            'message' => 'la impresion se ha ejecutado exitosamente',
-            'error' => '',
-            'success' => true,
-            'data' =>  '',
-        ]); 
+        
 
     }
     public function impresion_ingresos( Request $request )
