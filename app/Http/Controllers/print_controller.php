@@ -77,21 +77,8 @@ class print_controller extends Controller
     {
 
         $param = $request->all();
-
-         $postData = array(
-            'descripcion' => $descripcion,
-            'monto_cancelado' => $saldo_cancelado,
-            'codigo' =>  $codigo,
-            'cliente' => $cliente,
-            'numerosolicitud' => $n_solicitud,
-            'analista' => $analista,
-            'recepcionista' => $recepcionista,
-            'total' => $total,
-            "para" =>  $para,
-            "fecha_impresion" => $fecha_impresion,
-        );
- 
-        ticketera::imprimir_ingreso(
+  
+        ticketera::imprimir_ingreso_grupal(
             $param["fecha_impresion"],
             $param["descripcion"], 
             $param['monto_cancelado'],

@@ -94,7 +94,7 @@ class ticketera{
         $ruta_pie = public_path('dist/images/logo/pie_ticketera.png');
 
         $items = [
-            ['nombre' => 'Saldo pagado', 'precio' => $saldo_anterior], 
+            ['nombre' => 'Saldo pagado', 'precio' => $saldo_cancelado], 
         ];
 
         // Conecta con la impresora
@@ -135,25 +135,8 @@ class ticketera{
                 $impresora->text(" ");
             }
             $impresora->text("S/." . number_format($item['precio'], 2) . "\n");
-        }
-
-        // Total
-       
-        $impresora->text("===============================================\n");
-        
-        
-      
-
-        // Detalles de los elementos
-        foreach ($saldo_restante as $s_r) {
-            // Alinea el texto a la izquierda y el precio a la derecha
-            $impresora->text($s_r['nombre']);
-            $espacios = 40 - strlen($s_r['nombre']) - strlen($item['precio']) ;
-            for ($i = 0; $i < $espacios; $i++) {
-                $impresora->text(" ");
-            }
-            $impresora->text("S/." . number_format($s_r['precio'], 2) . "\n");
-        }
+        } 
+         
         $impresora->bitImage($imagen_pie);
 
         // Finaliza la impresión
