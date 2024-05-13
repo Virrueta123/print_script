@@ -40,11 +40,12 @@ class print_controller extends Controller
                 'success' => false,
                 'data' => '',
             ]);
-        }
-
-        
+        } 
 
     }
+
+
+
     public function impresion_ingresos( Request $request )
     {
 
@@ -53,6 +54,46 @@ class print_controller extends Controller
         ticketera::imprimir_ingreso(
             $param["fecha_impresion"],
             $param['saldo_pendiente'],
+            $param['monto_cancelado'],
+            $param['codigo'],
+            $param['cliente'],
+            $param['numerosolicitud'],
+            $param['analista'],
+            $param['recepcionista'],
+             $param['total'],
+             $param['para']
+        );
+
+        return response()->json([
+            'message' => 'la impresion se ha ejecutado exitosamente',
+            'error' => '',
+            'success' => true,
+            'data' =>  '',
+        ]); 
+
+    }
+
+     public function impresion_ingresos_grupal( Request $request )
+    {
+
+        $param = $request->all();
+
+         $postData = array(
+            'descripcion' => $descripcion,
+            'monto_cancelado' => $saldo_cancelado,
+            'codigo' =>  $codigo,
+            'cliente' => $cliente,
+            'numerosolicitud' => $n_solicitud,
+            'analista' => $analista,
+            'recepcionista' => $recepcionista,
+            'total' => $total,
+            "para" =>  $para,
+            "fecha_impresion" => $fecha_impresion,
+        );
+ 
+        ticketera::imprimir_ingreso(
+            $param["fecha_impresion"],
+            $param["descripcion"], 
             $param['monto_cancelado'],
             $param['codigo'],
             $param['cliente'],
