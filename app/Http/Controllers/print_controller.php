@@ -80,6 +80,8 @@ class print_controller extends Controller
   
         ticketera::imprimir_ingreso_grupal(
             $param["fecha_impresion"],
+            $param["cuota"],
+            $param["saldo_restante"], 
             $param["descripcion"], 
             $param['monto_cancelado'],
             $param['codigo'],

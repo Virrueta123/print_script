@@ -85,7 +85,7 @@ class ticketera{
     }
 
 
-     public static function imprimir_ingreso_grupal($fecha,$descripcion, $saldo_cancelado, $codigo, $cliente, $n_solicitud, $analista, $recepcionista, $total,$para = ""){
+     public static function imprimir_ingreso_grupal($fecha,$cuota,$saldo_restante,$descripcion, $saldo_cancelado, $codigo, $cliente, $n_solicitud, $analista, $recepcionista, $total,$para = ""){
 
         $fecha_impresion = $fecha;
         
@@ -111,6 +111,7 @@ class ticketera{
         $impresora->text("=== Ticket de pago amortizacion de prestamo === \n");
         $impresora->text("=== Codigo {$codigo}\n");
         $impresora->text("=== Fecha : {$fecha_impresion}\n");
+ 
         $impresora->text("=== Descripcion : {$descripcion}\n");
         if($para!=""){
             $impresora->text("=== Documento para => {$para}\n");
@@ -120,7 +121,7 @@ class ticketera{
 
         $impresora->text("Cliente ** {$cliente} \n"); 
         $impresora->text("Numero de solicitud ** {$n_solicitud} \n");
- 
+        $impresora->text("Numero de cuota ** {$cuota} \n");
         $impresora->text("Recepcionista ** {$recepcionista}\n");
    
         $impresora->text("Analista ** {$analista}\n"); 
@@ -136,6 +137,26 @@ class ticketera{
             }
             $impresora->text("S/." . number_format($item['precio'], 2) . "\n");
         } 
+
+        // Total
+       
+        $impresora->text("===============================================\n");
+        
+        
+        $saldo_restante = [
+            ['nombre' => "saldo restante de la cuota N° {$cuota}", 'precio' => $saldo_restante], 
+        ];
+
+        // Detalles de los elementos
+        foreach ($saldo_restante as $s_r) {
+            // Alinea el texto a la izquierda y el precio a la derecha
+            $impresora->text($s_r['nombre']);
+            $espacios = 40 - strlen($s_r['nombre']) - strlen($item['precio']) ;
+            for ($i = 0; $i < $espacios; $i++) {
+                $impresora->text(" ");
+            }
+            $impresora->text("S/." . number_format($s_r['precio'], 2) . "\n");
+        }
 
         $impresora->bitImage($imagen_pie);
 
