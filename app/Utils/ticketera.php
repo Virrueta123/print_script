@@ -155,7 +155,12 @@ class ticketera{
             for ($i = 0; $i < $espacios; $i++) {
                 $impresora->text(" ");
             }
-            $impresora->text("S/." . number_format($s_r['precio'], 2) . "\n");
+            if( $s_r['precio'] == "Cuota cancelada" ){
+                $impresora->text($s_r['precio']  . "\n");
+            }else{
+                $impresora->text("S/." . number_format($s_r['precio'], 2) . "\n");
+            }
+           
         }
 
         $impresora->bitImage($imagen_pie);
