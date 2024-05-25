@@ -284,9 +284,9 @@ class ticketera{
 
       
 
-        if( $para == "recepcion"){
+        if( $para == "recepcionista"){
 
-            if($copia){
+            if($copia=="si"){
                 $impresora->text("Firma del cliente ==============================\n");
                 $impresora->text("===\n");
                 $impresora->text("===\n");
