@@ -21,6 +21,7 @@ Route::post('/impresion_ingresos', [App\Http\Controllers\print_controller::class
 
 Route::post('/impresion_ingresos_grupal', [App\Http\Controllers\print_controller::class, 'impresion_ingresos_grupal'])->name('impresion_ingresos_grupal');
 
+Route::post('/imprimir_desembolso', [App\Http\Controllers\print_controller::class, 'imprimir_desembolso'])->name('imprimir_desembolso');
 
 Route::get('/', function () {
     return view('welcome');

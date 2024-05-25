@@ -14,6 +14,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         'impresion_ingresos',
         'impresion_gastos',
-        "impresion_ingresos_grupal"
+        "impresion_ingresos_grupal",
+        "imprimir_desembolso"
     ];
 }
