@@ -160,6 +160,8 @@ class print_controller extends Controller
             $InteresTotal = $Datax["InteresTotal"];
             $MontoRestante = $Datax["MontoRestante"];
             $Total = $Datax["Total"];
+            $fecha_inicio = $Datax["fecha_inicio"];
+            $fecha_final = $Datax["fecha_final"];
 
             $nombreImpresora = "XP-80CS";
             $ruta_logo = public_path('dist/images/logo/logo_ticketera.png');
@@ -280,7 +282,7 @@ class print_controller extends Controller
             //////
             $impresora->setEmphasis(true);
             $impresora->setTextSize(1, 1);
-            $impresora->text("Días trancurridos del 10/10/2024 al 25/10/2024\n");
+            $impresora->text("Días trancurridos del ".$fecha_inicio." al ".$fecha_final."\n");
 
             $impresora->setEmphasis(false);
             $impresora->setTextSize(1.3, 1);
