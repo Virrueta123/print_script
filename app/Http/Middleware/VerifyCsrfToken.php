@@ -15,6 +15,8 @@ class VerifyCsrfToken extends Middleware
         'impresion_ingresos',
         'impresion_gastos',
         "impresion_ingresos_grupal",
-        "imprimir_desembolso"
+        "imprimir_desembolso",
+        "ipc",
+        "impresion_voucher_prestamo_cancelado"
     ];
 }

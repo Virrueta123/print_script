@@ -9,7 +9,7 @@ class ticketera{
 
         $fecha_impresion = $fecha;
         
-        $nombreImpresora = "XP-80CS";
+        $nombreImpresora = "XP-80C";
         $ruta_logo = public_path('dist/images/logo/logo_ticketera.png');
         $ruta_pie = public_path('dist/images/logo/pie_ticketera.png');
 
@@ -89,7 +89,7 @@ class ticketera{
 
         $fecha_impresion = $fecha;
         
-        $nombreImpresora = "XP-80CS";
+        $nombreImpresora = "XP-80C";
         $ruta_logo = public_path('dist/images/logo/logo_ticketera.png');
         $ruta_pie = public_path('dist/images/logo/pie_ticketera.png');
 
@@ -143,7 +143,7 @@ class ticketera{
        
         $impresora->text("===============================================\n");
         
-        
+    
         $saldo_restante = [
             ['nombre' => "saldo restante de la cuota N° {$cuota}", 'precio' => $saldo_restante], 
         ];
@@ -176,7 +176,7 @@ class ticketera{
 
         $fecha_impresion = $fecha;
         
-        $nombreImpresora = "XP-80CS";
+        $nombreImpresora = "XP-80C";
         $ruta_logo = public_path('dist/images/logo/logo_ticketera.png');
         $ruta_pie = public_path('dist/images/logo/pie_ticketera.png');
  
@@ -235,7 +235,7 @@ class ticketera{
 
         $fecha_impresion = $fecha;
         
-        $nombreImpresora = "XP-80CS";
+        $nombreImpresora = "XP-80C";
         $ruta_logo = public_path('dist/images/logo/logo_ticketera.png');
         $ruta_pie = public_path('dist/images/logo/pie_ticketera.png');
  
@@ -281,8 +281,6 @@ class ticketera{
             }
             $impresora->text("S/." . number_format($s_r['precio'], 2) . "\n");
         }
-
-      
 
         if( $para == "recepcionista"){
 
