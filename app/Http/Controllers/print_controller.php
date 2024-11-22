@@ -9,6 +9,7 @@ use Mike42\Escpos\EscposImage;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Mike42\Escpos\Printer;
 use Milon\Barcode\DNS1D;
+use Picqer\Barcode\BarcodeGeneratorPNG;
 
 class print_controller extends Controller
 {
@@ -179,7 +180,7 @@ class print_controller extends Controller
 
             $impresora->setEmphasis(true);
             $impresora->setTextSize(2, 1);
-            $impresora->text("Cancelación préstamo de la solicitud N° ".$NumeroSolicitud."\n");
+            $impresora->text("Cancelación préstamo de la solicitud N° " . $NumeroSolicitud . "\n");
             $impresora->text("\n");
 
             $impresora->setEmphasis(true);
@@ -187,31 +188,31 @@ class print_controller extends Controller
             $impresora->text("Información de la solicitud\n");
             $impresora->text("\n");
 
-             //////
-             $impresora->setEmphasis(true);
-             $impresora->setTextSize(1, 1);
-             $impresora->text("Nombres y apellidos\n");
- 
-             $impresora->setEmphasis(false);
-             $impresora->setTextSize(1.3, 1);
-             $impresora->text($Nombres . "\n");
-             $impresora->text("\n");
-             //////
+            //////
+            $impresora->setEmphasis(true);
+            $impresora->setTextSize(1, 1);
+            $impresora->text("Nombres y apellidos\n");
 
-             
-             //////
-             $impresora->setEmphasis(true);
-             $impresora->setTextSize(1, 1);
-             $impresora->text("Dni\n");
- 
-             $impresora->setEmphasis(false);
-             $impresora->setTextSize(1.3, 1);
-             $impresora->text($Dni . "\n");
-             $impresora->text("\n");
-             //////
+            $impresora->setEmphasis(false);
+            $impresora->setTextSize(1.3, 1);
+            $impresora->text($Nombres . "\n");
+            $impresora->text("\n");
+            //////
 
 
-             
+            //////
+            $impresora->setEmphasis(true);
+            $impresora->setTextSize(1, 1);
+            $impresora->text("Dni\n");
+
+            $impresora->setEmphasis(false);
+            $impresora->setTextSize(1.3, 1);
+            $impresora->text($Dni . "\n");
+            $impresora->text("\n");
+            //////
+
+
+
             $impresora->setEmphasis(true);
             $impresora->setTextSize(2, 1);
             $impresora->text("Información del préstamo\n");
@@ -256,17 +257,17 @@ class print_controller extends Controller
             $impresora->setTextSize(2, 1);
             $impresora->text("Información del pago\n");
             $impresora->text("\n");
-  
-             //////
-             $impresora->setEmphasis(true);
-             $impresora->setTextSize(1, 1);
-             $impresora->text("Fecha de la operación\n");
- 
-             $impresora->setEmphasis(false);
-             $impresora->setTextSize(1.3, 1);
-             $impresora->text($FechaCreacion . "\n");
-             $impresora->text("\n");
-             //////
+
+            //////
+            $impresora->setEmphasis(true);
+            $impresora->setTextSize(1, 1);
+            $impresora->text("Fecha de la operación\n");
+
+            $impresora->setEmphasis(false);
+            $impresora->setTextSize(1.3, 1);
+            $impresora->text($FechaCreacion . "\n");
+            $impresora->text("\n");
+            //////
 
             //////
             $impresora->setEmphasis(true);
@@ -282,7 +283,7 @@ class print_controller extends Controller
             //////
             $impresora->setEmphasis(true);
             $impresora->setTextSize(1, 1);
-            $impresora->text("Días trancurridos del ".$fecha_inicio." al ".$fecha_final."\n");
+            $impresora->text("Días trancurridos del " . $fecha_inicio . " al " . $fecha_final . "\n");
 
             $impresora->setEmphasis(false);
             $impresora->setTextSize(1.3, 1);
@@ -348,37 +349,57 @@ class print_controller extends Controller
     }
 
 
-    public function impresion_prueba_cautiva()
+    public function impresion_prueba_cautiva(Request $request)
     {
 
+        try { 
+            // Configuración de la impresora
+            $nombreImpresora = "XP-80CS";
+            $conector = new WindowsPrintConnector($nombreImpresora);
+            $impresora = new Printer($conector);
 
-        $nombreImpresora = "XP-80C";
-        $ruta_logo = public_path('dist/images/logo/logo_ticketera.png');
-        $ruta_pie = public_path('dist/images/logo/pie_ticketera.png');
+            // Centrar el contenido
+            $impresora->setJustification(Printer::JUSTIFY_CENTER);
 
-        // Conecta con la impresora
-        $conector = new WindowsPrintConnector($nombreImpresora);
-        $impresora = new Printer($conector);
+            // Agregar espacio superior
+            $impresora->feed(1);  // Añade 4 líneas de espacio al inicio
 
-        $imagen = EscposImage::load($ruta_logo, false);
+            // Espacio entre líneas
+            $impresora->setLineSpacing(10);
+            // Código EAN13 (12 dígitos, el 13º se calcula automáticamente)
+            $codigo = $request->input("barcode");  // Asegúrate de usar 12 dígitos
 
-        $barcode = new DNS1D();
-        $barcodeImage = $barcode->getBarcodePNG('2024', 'C39E');
-        $barcode->setType('C39E');
+            // Imprimir texto descriptivo
+            $impresora->text("Producto: CAUTIVA\n");
 
-        $img = EscposImage::load($barcodeImage);
+            // Imprimir código de barras EAN13
+            $impresora->setBarcodeHeight(80);    // Alto del código de barras
+            $impresora->setBarcodeWidth(4);      // Ancho de las barras
+            $impresora->barcode($codigo, Printer::BARCODE_JAN13);  // Constante corregida
 
+            // Imprimir el número debajo
+            $impresora->text($codigo . "\n");
 
-        // Establecer el código a imprimir
-        $code = '1234567890';
-        $barcode->setCode($code);
-        $impresora->graphics($img);
+            // Alimentar papel y cortar
+            $impresora->feed(1);
+            $impresora->cut();
+            $impresora->close();
 
-        $impresora->text("Cautiva\n");
+            return response()->json([
+                'message' => 'Impresión exitosa',
+                'error' => "",
+                'success' => true,
+                'data' => '',
+            ]);
+        } catch (\Throwable $th) {
+            Log::error('Error en impresión de código EAN13: ' . $th->getMessage());
 
-        // Finaliza la impresión
-        $impresora->feed(1);
-        $impresora->cut();
-        $impresora->close();
+            return response()->json([
+                'message' => 'Error del servidor',
+                'error' => $th->getMessage(),
+                'success' => false,
+                'data' => '',
+            ]);
+        }
     }
 }

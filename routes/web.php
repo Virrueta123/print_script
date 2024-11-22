@@ -23,7 +23,7 @@ Route::post('/impresion_ingresos_grupal', [App\Http\Controllers\print_controller
 
 Route::post('/imprimir_desembolso', [App\Http\Controllers\print_controller::class, 'imprimir_desembolso'])->name('imprimir_desembolso');
 
-Route::get('/ipc', [App\Http\Controllers\print_controller::class, 'impresion_prueba_cautiva'])->name('impresion_prueba_cautiva');
+Route::post('/ipc', [App\Http\Controllers\print_controller::class, 'impresion_prueba_cautiva'])->name('impresion_prueba_cautiva');
 
 Route::get('/impresion_voucher_prestamo_cancelado', [App\Http\Controllers\print_controller::class, 'impresion_voucher_prestamo_cancelado']);
 

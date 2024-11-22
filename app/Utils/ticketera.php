@@ -58,7 +58,7 @@ class ticketera{
         }
 
         // Total
-       
+         
         $impresora->text("===============================================\n");
         
         
@@ -96,10 +96,12 @@ class ticketera{
         $items = [
             ['nombre' => 'Saldo pagado', 'precio' => $saldo_cancelado], 
         ];
+        
 
         // Conecta con la impresora
         $conector = new WindowsPrintConnector($nombreImpresora);
         $impresora = new Printer($conector);
+        
 
         $imagen = EscposImage::load($ruta_logo, false);
         $imagen_pie = EscposImage::load($ruta_pie, false);
