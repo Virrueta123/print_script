@@ -354,7 +354,7 @@ class print_controller extends Controller
 
         try { 
             // Configuración de la impresora
-            $nombreImpresora = "XP-80C";
+            $nombreImpresora = "XP-80CS";
             $conector = new WindowsPrintConnector($nombreImpresora);
             $impresora = new Printer($conector);
 
