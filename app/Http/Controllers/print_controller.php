@@ -367,7 +367,8 @@ class print_controller extends Controller
 
             // Imprimir texto descriptivo
             $impresora->text("Producto: CAUTIVA\n");
- 
+            $impresora->feed(1);
+            $impresora->cut();
             // Cerrar la conexión
             $impresora->close();
 
