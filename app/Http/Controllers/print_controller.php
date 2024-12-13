@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Utils\ticketera;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Mike42\Escpos\CapabilityProfile;
 use Mike42\Escpos\EscposImage;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Mike42\Escpos\Printer;
@@ -358,9 +357,19 @@ class print_controller extends Controller
             $nombreImpresora = "HL3200";
             $conector = new WindowsPrintConnector($nombreImpresora);
             $impresora = new Printer($conector);
-            // Configurar el perfil de la impresora ADV-9010
-            $impresora->text("\x1B\x61\x01"); // Comando ESC/POS para centrar texto
-            $impresora->text("Producto: CAUTIVA\n"); 
+
+            // Configurar el estilo de texto
+            $impresora->setEmphasis(true);
+            $impresora->setFont(Printer::FONT_B);
+ 
+            // Centrar el contenido
+            $impresora->setJustification(Printer::JUSTIFY_CENTER);
+
+            // Imprimir texto descriptivo
+            $impresora->text("Producto: CAUTIVA\n");
+ 
+            // Cerrar la conexión
+            $impresora->close();
 
 
             return response()->json([
