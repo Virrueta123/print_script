@@ -354,7 +354,7 @@ class print_controller extends Controller
 
         try {
             // Configuración de la impresora
-            $nombreImpresora = "HL3200";
+            $nombreImpresora = "Generic / Text Only";
             $conector = new WindowsPrintConnector($nombreImpresora);
             $impresora = new Printer($conector);
 
