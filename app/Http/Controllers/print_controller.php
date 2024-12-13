@@ -355,7 +355,7 @@ class print_controller extends Controller
 
         try {
             // Configuración de la impresora
-            $nombreImpresora = "cautivacode";
+            $nombreImpresora = "HL3200";
             $conector = new WindowsPrintConnector($nombreImpresora);
             $impresora = new Printer($conector);
             // Configurar el perfil de la impresora ADV-9010
