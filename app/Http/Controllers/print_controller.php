@@ -371,14 +371,7 @@ class print_controller extends Controller
 
             // Imprimir texto descriptivo
             $impresora->text("Producto: CAUTIVA\n");
-
-            // Imprimir código de barras EAN13
-            $impresora->setBarcodeHeight(80);    // Alto del código de barras
-            $impresora->setBarcodeWidth(4);      // Ancho de las barras
-            $impresora->barcode($codigo, Printer::BARCODE_JAN13);  // Constante corregida
-
-            // Imprimir el número debajo
-            $impresora->text($codigo . "\n");
+ 
 
             // Alimentar papel y cortar
             $impresora->feed(1);
