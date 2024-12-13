@@ -359,15 +359,9 @@ class print_controller extends Controller
             $conector = new WindowsPrintConnector($nombreImpresora);
             $impresora = new Printer($conector);
             // Configurar el perfil de la impresora ADV-9010
-            $profile = CapabilityProfile::load('default');
-            $impresora->setPrintWidth(400); // Ancho de impresión en píxeles
-
-            // Imprimir contenido
-            $impresora->setJustification(Printer::JUSTIFY_CENTER);
+            $impresora->text("\x1B\x61\x01"); // Comando ESC/POS para centrar texto
             $impresora->text("Producto: CAUTIVA\n");
-            $impresora->feed(1);
-            $impresora->cut();
-
+            $impresora->text("\x1D\x56\x41");
             $impresora->close();
 
 
