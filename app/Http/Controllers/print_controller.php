@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Utils\ticketera;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Mike42\Escpos\CapabilityProfile;
 use Mike42\Escpos\EscposImage;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Mike42\Escpos\Printer;
@@ -357,31 +358,16 @@ class print_controller extends Controller
             $nombreImpresora = "cautivaprint";
             $conector = new WindowsPrintConnector($nombreImpresora);
             $impresora = new Printer($conector);
+            // Configurar el perfil de la impresora ADV-9010
+            $profile = CapabilityProfile::load('default');
+            $impresora->setPrintWidth(400); // Ancho de impresión en píxeles
 
-            // Configurar el estilo de texto
-            $impresora->setEmphasis(true);
-            $impresora->setFont(Printer::FONT_B);
-
-            // Ajustar el tamaño de la etiqueta
-            $impresora->setLineSpacing(30);
-
-            // Centrar el contenido
+            // Imprimir contenido
             $impresora->setJustification(Printer::JUSTIFY_CENTER);
-
-            // Imprimir texto descriptivo
             $impresora->text("Producto: CAUTIVA\n");
+            $impresora->feed(1);
+            $impresora->cut();
 
-            // Agregar más información
-            $impresora->text("Código: 123456\n");
-            $impresora->text("Fecha: " . date('Y-m-d') . "\n");
-
-            // Alimentar papel para la siguiente etiqueta
-            $impresora->feed(3);
-
-            // Cortar el papel (si tu impresora lo soporta)
-            $impresora->cut(Printer::CUT_PARTIAL);
-
-            // Cerrar la conexión
             $impresora->close();
 
 
