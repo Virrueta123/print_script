@@ -360,9 +360,7 @@ class print_controller extends Controller
             $impresora = new Printer($conector);
             // Configurar el perfil de la impresora ADV-9010
             $impresora->text("\x1B\x61\x01"); // Comando ESC/POS para centrar texto
-            $impresora->text("Producto: CAUTIVA\n");
-            $impresora->text("\x1D\x56\x41");
-            $impresora->close();
+            $impresora->text("Producto: CAUTIVA\n"); 
 
 
             return response()->json([
