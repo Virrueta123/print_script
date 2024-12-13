@@ -352,21 +352,38 @@ class print_controller extends Controller
     public function impresion_prueba_cautiva(Request $request)
     {
 
-        try { 
+        try {
             // Configuración de la impresora
             $nombreImpresora = "cautivaprint";
             $conector = new WindowsPrintConnector($nombreImpresora);
             $impresora = new Printer($conector);
 
+            // Configurar el estilo de texto
+            $impresora->setEmphasis(true);
+            $impresora->setFont(Printer::FONT_B);
+
+            // Ajustar el tamaño de la etiqueta
+            $impresora->setLineSpacing(30);
+
             // Centrar el contenido
-         
+            $impresora->setJustification(Printer::JUSTIFY_CENTER);
+
             // Imprimir texto descriptivo
             $impresora->text("Producto: CAUTIVA\n");
- 
 
-            // Alimentar papel y cortar 
-            $impresora->cut();
+            // Agregar más información
+            $impresora->text("Código: 123456\n");
+            $impresora->text("Fecha: " . date('Y-m-d') . "\n");
+
+            // Alimentar papel para la siguiente etiqueta
+            $impresora->feed(3);
+
+            // Cortar el papel (si tu impresora lo soporta)
+            $impresora->cut(Printer::CUT_PARTIAL);
+
+            // Cerrar la conexión
             $impresora->close();
+
 
             return response()->json([
                 'message' => 'Impresión exitosa',
