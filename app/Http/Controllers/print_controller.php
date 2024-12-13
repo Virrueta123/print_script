@@ -359,29 +359,12 @@ class print_controller extends Controller
             $impresora = new Printer($conector);
 
             // Centrar el contenido
-            $impresora->setJustification(Printer::JUSTIFY_CENTER);
-
-            // Agregar espacio superior
-            $impresora->feed(1);  // Añade 4 líneas de espacio al inicio
-
-            // Espacio entre líneas
-            $impresora->setLineSpacing(10);
-            // Código EAN13 (12 dígitos, el 13º se calcula automáticamente)
-            $codigo = $request->input("barcode");  // Asegúrate de usar 12 dígitos
-
+         
             // Imprimir texto descriptivo
             $impresora->text("Producto: CAUTIVA\n");
+ 
 
-            // Imprimir código de barras EAN13
-            $impresora->setBarcodeHeight(80);    // Alto del código de barras
-            $impresora->setBarcodeWidth(4);      // Ancho de las barras
-            $impresora->barcode($codigo, Printer::BARCODE_JAN13);  // Constante corregida
-
-            // Imprimir el número debajo
-            $impresora->text($codigo . "\n");
-
-            // Alimentar papel y cortar
-            $impresora->feed(1);
+            // Alimentar papel y cortar 
             $impresora->cut();
             $impresora->close();
 
