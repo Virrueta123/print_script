@@ -3,13 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Utils\ticketera;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Mike42\Escpos\EscposImage;
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Mike42\Escpos\Printer;
 use Milon\Barcode\DNS1D;
+use Milon\Barcode\DNS2D;
 use Picqer\Barcode\BarcodeGeneratorPNG;
+use Milon\Barcode\Facades\Barcode;
+use Milon\Barcode\Facades\DNS1DFacade;
+use TCPDF;
 
 class print_controller extends Controller
 {
@@ -22,6 +28,7 @@ class print_controller extends Controller
     {
 
         $param = $request->all();
+
 
         try {
             ticketera::imprimir_gasto(
@@ -352,47 +359,109 @@ class print_controller extends Controller
     public function impresion_prueba_cautiva(Request $request)
     {
 
-        try {
-            // Configuración de la impresora
-            $nombreImpresora = "Generic / Text Only";
-            $conector = new WindowsPrintConnector($nombreImpresora);
-            $impresora = new Printer($conector);
-
-            // Centrar el contenido
-            $impresora->setJustification(Printer::JUSTIFY_CENTER);
-
-            // Agregar espacio superior
-            $impresora->feed(1);  // Añade 4 líneas de espacio al inicio
-
-            // Espacio entre líneas
-            $impresora->setLineSpacing(10);
-            // Código EAN13 (12 dígitos, el 13º se calcula automáticamente)
-            $codigo = $request->input("barcode");  // Asegúrate de usar 12 dígitos
-
-            // Imprimir texto descriptivo
-            $impresora->text("Producto: CAUTIVA\n");
+        try{
+             
  
+        $pdf = new TCPDF('P', 'mm', array(80, 40), true, 'UTF-8', false);
 
-            // Alimentar papel y cortar
-            $impresora->feed(1);
-            $impresora->cut();
-            $impresora->close();
+        // Establecer información del documento
+        $pdf->SetCreator('Cautiva');
+        $pdf->SetAuthor('');
+        $pdf->SetTitle('Ticket');
 
+        // Establecer márgenes
+        $pdf->SetMargins(5, 5, 5);
+
+        // Eliminar cabecera y pie de página
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
+        // Establecer resolución DPI más alta (300 DPI)
+        $pdf->setImageScale(300 / 72);
+
+        // Agregar una página
+        $pdf->AddPage();
+
+        // Establecer fuente
+        $pdf->SetFont('helvetica', '', 7);
+
+        // Agregar contenido
+        $pdf->Cell(0, 2, 'CAUTIVA', 0, 1, 'C');
+
+        // Establecer estilo del código de barras
+        $style = array(
+            'position' => '',
+            'align' => 'C',
+            'stretch' => false,  // Desactivar la distorsión del texto
+            'fitwidth' => true,  // Ajustar el código de barras al ancho
+            'border' => false, 
+            'fgcolor' => array(0, 0, 0), // Color negro
+            'bgcolor' => false,  // Fondo transparente
+            'text' => true,  // Mostrar texto
+            'font' => 'helvetica',
+            'fontsize' => 5,  // Aumentar el tamaño de la fuente del texto
+            'stretchtext' => 0  // Evitar la distorsión
+        );
+        // Generar código de barras con un tamaño adecuado
+        $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', '', 6, 10, $style, 'N'); 
+        $pdf->SetFont('helvetica', '', 3);
+        $pdf->Cell(0, 1,$request->input("product_name"), 0, 1, 'C');
+        $pdf->SetFont('helvetica', '', 5);
+        $pdf->Cell(0, 1, $request->input("price"), 0, 1, 'C');
+
+        // Ruta completa del archivo en la carpeta public
+        $filePath = public_path("files/archivo1.pdf");
+
+        // Asegurarse de que el directorio existe
+        if (!file_exists(public_path('files'))) {
+            mkdir(public_path('files'), 0755, true);
+        }
+
+        // Guardar el PDF en la carpeta public
+        $pdf->Output($filePath, 'F');
+
+        exit;
+
+        // Ruta del archivo PDF
+        $pdfFile = public_path('files/archivo1.pdf'); // Ajusta la ruta si es necesario
+
+        // Nombre de la impresora
+        $printerName = '\\\\Lex\\HL3200USB'; // Asegúrate de que el nombre de la impresora esté bien
+
+        // Ruta del ejecutable de SumatraPDF
+        $sumatraPdfPath = '"C:\\programas\\SumatraPDF\\SumatraPDF.exe"'; // Asegúrate de que la ruta del ejecutable sea correcta
+
+        // Comando para imprimir el PDF
+        $command = "$sumatraPdfPath -print-to \"$printerName\" \"$pdfFile\"";
+
+        // Ejecutar el comando
+        exec($command, $output, $status);
+
+        // Comprobar el resultado
+        if ($status === 0) { 
             return response()->json([
-                'message' => 'Impresión exitosa',
-                'error' => "",
+                'message' => "Se imprimio correctamente.",
+                'error' => $th->getMessage(),
                 'success' => true,
                 'data' => '',
             ]);
-        } catch (\Throwable $th) {
-            Log::error('Error en impresión de código EAN13: ' . $th->getMessage());
-
+        } else { 
             return response()->json([
-                'message' => 'Error del servidor',
+                'message' => "Hubo un error al imprimir el archivo PDF.",
                 'error' => $th->getMessage(),
                 'success' => false,
                 'data' => '',
             ]);
         }
+
+    } catch (\Throwable $th) {
+        Log::error($th->getMessage());
+        return response()->json([
+            'message' => 'error del servidor',
+            'error' => $th->getMessage(),
+            'success' => false,
+            'data' => '',
+        ]);
+    }
     }
 }
