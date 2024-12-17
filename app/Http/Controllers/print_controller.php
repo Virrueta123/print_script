@@ -399,12 +399,12 @@ class print_controller extends Controller
             'bgcolor' => false,  // Fondo transparente
             'text' => true,  // Mostrar texto
             'font' => 'helvetica',
-            'fontsize' => 5,  // Aumentar el tamaño de la fuente del texto
+            'fontsize' => 7,  // Aumentar el tamaño de la fuente del texto
             'stretchtext' => 0  // Evitar la distorsión
         );
         // Generar código de barras con un tamaño adecuado
-        $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', '', 6, 10, $style, 'N'); 
-        $pdf->SetFont('helvetica', '', 3);
+        $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', '', 15, 10, $style, 'N'); 
+        $pdf->SetFont('helvetica', '', 7);
         $pdf->Cell(0, 1,$request->input("product_name"), 0, 1, 'C');
         $pdf->SetFont('helvetica', '', 5);
         $pdf->Cell(0, 1, $request->input("price"), 0, 1, 'C');
@@ -440,14 +440,14 @@ class print_controller extends Controller
         if ($status === 0) { 
             return response()->json([
                 'message' => "Se imprimio correctamente.",
-                'error' => $th->getMessage(),
+                'error' => "",
                 'success' => true,
                 'data' => '',
             ]);
         } else { 
             return response()->json([
                 'message' => "Hubo un error al imprimir el archivo PDF.",
-                'error' => $th->getMessage(),
+                'error' => "",
                 'success' => false,
                 'data' => '',
             ]);
