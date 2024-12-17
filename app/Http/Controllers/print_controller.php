@@ -426,7 +426,7 @@ class print_controller extends Controller
         $pdfFile = public_path('files/archivo1.pdf'); // Ajusta la ruta si es necesario
 
         // Nombre de la impresora
-        $printerName = '\\\\Lex\\HL3200USB'; // Asegúrate de que el nombre de la impresora esté bien
+        $printerName = '\\\\DESKTOP-JOV5EM7\\HL3200'; // Asegúrate de que el nombre de la impresora esté bien
 
         // Ruta del ejecutable de SumatraPDF
         $sumatraPdfPath = '"C:\\programas\\SumatraPDF\\SumatraPDF.exe"'; // Asegúrate de que la ruta del ejecutable sea correcta
