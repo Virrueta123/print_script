@@ -362,7 +362,7 @@ class print_controller extends Controller
         try{
              
  
-        $pdf = new TCPDF('P', 'mm', array(50, 25), true, 'UTF-8', false);
+        $pdf = new TCPDF('P', 'mm', array(180, 90), true, 'UTF-8', false);
 
         // Establecer información del documento
         $pdf->SetCreator('Cautiva');
