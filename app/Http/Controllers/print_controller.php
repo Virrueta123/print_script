@@ -419,8 +419,7 @@ class print_controller extends Controller
 
         // Guardar el PDF en la carpeta public
         $pdf->Output($filePath, 'F');
-
-        exit;
+ 
 
         // Ruta del archivo PDF
         $pdfFile = public_path('files/archivo1.pdf'); // Ajusta la ruta si es necesario
