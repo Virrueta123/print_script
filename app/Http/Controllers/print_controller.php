@@ -377,7 +377,7 @@ class print_controller extends Controller
         $pdf->setPrintFooter(false);
 
         // Establecer resolución DPI más alta (300 DPI)
-        $pdf->setImageScale(300 / 72);
+        $pdf->setImageScale(150 / 72);
 
         // Agregar una página
         $pdf->AddPage();
