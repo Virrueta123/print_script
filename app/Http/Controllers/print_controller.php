@@ -362,52 +362,58 @@ class print_controller extends Controller
         try{
              
  
-        $pdf = new TCPDF('P', 'mm', array(80, 40), true, 'UTF-8', false);
+            $pdf = new TCPDF('P', 'mm', array(50, 25), true, 'UTF-8', false);
 
-        // Establecer información del documento
-        $pdf->SetCreator('Cautiva');
-        $pdf->SetAuthor('');
-        $pdf->SetTitle('Ticket');
-
-        // Establecer márgenes
-        $pdf->SetMargins(5, 5, 5);
-
-        // Eliminar cabecera y pie de página
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-
-        // Establecer resolución DPI más alta (300 DPI)
-        $pdf->setImageScale(150 / 72);
-
-        // Agregar una página
-        $pdf->AddPage();
-
-        // Establecer fuente
-        $pdf->SetFont('helvetica', '', 7);
-
-        // Agregar contenido
-        $pdf->Cell(0, 2, 'CAUTIVA', 0, 1, 'C');
-
-        // Establecer estilo del código de barras
-        $style = array(
-            'position' => '',
-            'align' => 'C',
-            'stretch' => false,  // Desactivar la distorsión del texto
-            'fitwidth' => true,  // Ajustar el código de barras al ancho
-            'border' => false, 
-            'fgcolor' => array(0, 0, 0), // Color negro
-            'bgcolor' => false,  // Fondo transparente
-            'text' => true,  // Mostrar texto
-            'font' => 'helvetica',
-            'fontsize' => 7,  // Aumentar el tamaño de la fuente del texto
-            'stretchtext' => 0  // Evitar la distorsión
-        );
-        // Generar código de barras con un tamaño adecuado
-        $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', '', 8, 10, $style, 'N'); 
-        $pdf->SetFont('helvetica', '', 7);
-        $pdf->Cell(0, 1,$request->input("product_name"), 0, 1, 'C');
-        $pdf->SetFont('helvetica', '', 7);
-        $pdf->Cell(0, 1, $request->input("price"), 0, 1, 'C');
+            // Establecer información del documento
+            $pdf->SetCreator('Cautiva');
+            $pdf->SetTitle('Ticket');
+            
+            // Establecer márgenes
+            $pdf->SetMargins(2, 2, 2);
+            
+            // Eliminar cabecera y pie de página
+            $pdf->setPrintHeader(false);
+            $pdf->setPrintFooter(false);
+            
+            // Agregar una página
+            $pdf->AddPage();
+            
+            // Establecer fuente
+            $pdf->SetFont('helvetica', '', 8);
+            
+            // Título
+            $pdf->Cell(0, 5, 'CAUTIVA', 0, 1, 'C');
+            
+            // Configuración del código de barras
+            $style = array(
+                'position' => '',
+                'align' => 'C',
+                'stretch' => false,
+                'fitwidth' => true,
+                'border' => false,
+                'fgcolor' => array(0, 0, 0),
+                'bgcolor' => false,
+                'text' => true,
+                'font' => 'helvetica',
+                'fontsize' => 8,
+                'stretchtext' => 0
+            );
+            
+            // Código de barras
+            $pdf->write1DBarcode(
+                $request->input("barcode"),
+                'C128',
+                '', '', 
+                40,  // Ancho
+                15,  // Altura
+                $style,
+                'N'
+            );
+            
+            // Texto inferior
+            $pdf->SetFont('helvetica', '', 7);
+            $pdf->Cell(0, 4, $request->input("product_name"), 0, 1, 'C');
+            $pdf->Cell(0, 4, $request->input("price"), 0, 1, 'C');
 
         // Ruta completa del archivo en la carpeta public
         $filePath = public_path("files/archivo1.pdf");
