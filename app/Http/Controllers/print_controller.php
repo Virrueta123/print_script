@@ -362,7 +362,7 @@ class print_controller extends Controller
         try{
              
  
-        $pdf = new TCPDF('P', 'mm', array(180, 90), true, 'UTF-8', false);
+        $pdf = new TCPDF('P', 'mm', array(80, 40), true, 'UTF-8', false);
 
         // Establecer información del documento
         $pdf->SetCreator('Cautiva');
@@ -403,7 +403,7 @@ class print_controller extends Controller
             'stretchtext' => 0  // Evitar la distorsión
         );
         // Generar código de barras con un tamaño adecuado
-        $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', '', 8, 10, $style, 'N'); 
+        $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', '', 18, 4, $style, 'N'); 
         $pdf->SetFont('helvetica', '', 7);
         $pdf->Cell(0, 1,$request->input("product_name"), 0, 1, 'C');
         $pdf->SetFont('helvetica', '', 7);
