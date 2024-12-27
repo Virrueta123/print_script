@@ -370,7 +370,7 @@ class print_controller extends Controller
         $pdf->SetTitle('Ticket');
 
         // Establecer márgenes
-        $pdf->SetMargins(5, 5, 5);
+        $pdf->SetMargins(3, 2, 3;
 
         // Eliminar cabecera y pie de página
         $pdf->setPrintHeader(false);
@@ -386,7 +386,7 @@ class print_controller extends Controller
         $pdf->SetFont('helvetica', '', 7);
 
         // Agregar contenido
-        $pdf->Cell(0, 2, 'CAUTIVA', 0, 1, 'C');
+        $pdf->Cell(0, 1, 'CAUTIVA', 0, 1, 'C');
 
         // Establecer estilo del código de barras
         $style = array(
@@ -403,7 +403,7 @@ class print_controller extends Controller
             'stretchtext' => 0  // Evitar la distorsión
         );
         // Generar código de barras con un tamaño adecuado
-        $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', '', 13, 4, $style, 'N'); 
+        $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', '', 11, 4, $style, 'N'); 
         $pdf->SetFont('helvetica', '', 7);
         $pdf->Cell(0, 1,$request->input("product_name"), 0, 1, 'C');
         $pdf->SetFont('helvetica', '', 7);
