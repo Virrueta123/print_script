@@ -359,108 +359,108 @@ class print_controller extends Controller
     public function impresion_prueba_cautiva(Request $request)
     {
 
-        try { 
+        try{
+             
+ 
+        $pdf = new TCPDF('P', 'mm', array(80, 40), true, 'UTF-8', false);
 
-            $pdf = new TCPDF('P', 'mm', array(80, 40), true, 'UTF-8', false);
+        // Establecer información del documento
+        $pdf->SetCreator('Cautiva');
+        $pdf->SetAuthor('');
+        $pdf->SetTitle('Ticket');
 
-            // Establecer información del documento
-            $pdf->SetCreator('Cautiva');
-            $pdf->SetAuthor('');
-            $pdf->SetTitle('Ticket');
+        // Establecer márgenes
+        $pdf->SetMargins(3, 2, 3);
 
-            // Establecer márgenes
-            $pdf->SetMargins(3, 2, 3);
+        // Eliminar cabecera y pie de página
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
 
-            // Eliminar cabecera y pie de página
-            $pdf->setPrintHeader(false);
-            $pdf->setPrintFooter(false);
+        // Establecer resolución DPI más alta (300 DPI)
+        $pdf->setImageScale(600 / 72);
 
-            // Establecer resolución DPI más alta (600 DPI)
-            $pdf->setImageScale(600 / 72);
+        // Agregar una página
+        $pdf->AddPage();
 
-            // Agregar una página
-            $pdf->AddPage();
+        // Establecer fuente
+        $pdf->SetFont('helvetica', '', 7);
 
-            // Usar una fuente TrueType para mejor calidad
-            $pdf->AddFont('DejaVu', '', 'DejaVuSansCondensed.ttf', true);
-            $pdf->SetFont('DejaVu', '', 8);
+        // Agregar contenido
+        $pdf->Cell(0, 2, 'CAUTIVA', 0, 1, 'C');
 
-            // Agregar contenido
-            $pdf->Cell(0, 2, 'CAUTIVA', 0, 1, 'C');
+        // Establecer estilo del código de barras
+        $style = array(
+            'position' => '',
+            'align' => 'C',
+            'stretch' => false,  // Desactivar la distorsión del texto
+            'fitwidth' => true,  // Ajustar el código de barras al ancho
+            'border' => false, 
+            'fgcolor' => array(0, 0, 0), // Color negro
+            'bgcolor' => false,  // Fondo transparente
+            'text' => true,  // Mostrar texto
+            'font' => 'helvetica',
+            'fontsize' => 7,  // Aumentar el tamaño de la fuente del texto
+            'stretchtext' => 0  // Evitar la distorsión
+        );
+        // Generar código de barras con un tamaño adecuado
+        $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', 74, 11, 4, $style, 'N'); 
+        $pdf->SetFont('helvetica', '', 7);
+        $pdf->Cell(0, 1,$request->input("product_name"), 0, 1, 'C');
+        $pdf->SetFont('helvetica', '', 7);
+        $pdf->Cell(0, 1, $request->input("price"), 0, 1, 'C');
 
-            // Establecer estilo del código de barras
-            $style = array(
-                'position' => '',
-                'align' => 'C',
-                'stretch' => false,
-                'fitwidth' => true,
-                'border' => false,
-                'fgcolor' => array(0, 0, 0),
-                'bgcolor' => false,
-                'text' => true,
-                'font' => 'DejaVu',
-                'fontsize' => 8,
-                'stretchtext' => 0
-            );
+        // Ruta completa del archivo en la carpeta public
+        $filePath = public_path("files/archivo1.pdf");
 
-            // Generar código de barras con un tamaño adecuado
-            $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', 74, 15, 0.4, $style, 'N');
+        // Asegurarse de que el directorio existe
+        if (!file_exists(public_path('files'))) {
+            mkdir(public_path('files'), 0755, true);
+        }
 
-            $pdf->SetFont('DejaVu', '', 8);
-            $pdf->Cell(0, 1, $request->input("product_name"), 0, 1, 'C');
-            $pdf->SetFont('DejaVu', '', 8);
-            $pdf->Cell(0, 1, $request->input("price"), 0, 1, 'C');
+        // Guardar el PDF en la carpeta public
+        $pdf->Output($filePath, 'F');
+ 
 
-            // Ruta completa del archivo en la carpeta public
-            $filePath = public_path("files/archivo1.pdf");
+        // Ruta del archivo PDF
+        $pdfFile = public_path('files/archivo1.pdf'); // Ajusta la ruta si es necesario
 
-            // Asegurarse de que el directorio existe
-            if (!file_exists(public_path('files'))) {
-                mkdir(public_path('files'), 0755, true);
-            }
+        // Nombre de la impresora
+        $printerName = '\\\\DESKTOP-JOV5EM7\\HL3200'; // Asegúrate de que el nombre de la impresora esté bien
 
-            // Guardar el PDF en la carpeta public
-            $pdf->Output($filePath, 'F');
+        // Ruta del ejecutable de SumatraPDF
+        $sumatraPdfPath = '"C:\\programas\\SumatraPDF\\SumatraPDF.exe"'; // Asegúrate de que la ruta del ejecutable sea correcta
 
-            // Ruta del archivo PDF
-            $pdfFile = public_path('files/archivo1.pdf');
+        // Comando para imprimir el PDF
+        $command = "$sumatraPdfPath -print-to \"$printerName\" \"$pdfFile\"";
 
-            // Nombre de la impresora
-            $printerName = '\\\\DESKTOP-JOV5EM7\\HL3200';
+        // Ejecutar el comando
+        exec($command, $output, $status);
 
-            // Ruta del ejecutable de SumatraPDF
-            $sumatraPdfPath = '"C:\\programas\\SumatraPDF\\SumatraPDF.exe"';
-
-            // Comando para imprimir el PDF con configuraciones de alta calidad
-            $command = "$sumatraPdfPath -print-to \"$printerName\" -print-settings \"paper=A4,fit=noscale,dpi=600\" \"$pdfFile\"";
-
-            // Ejecutar el comando
-            exec($command, $output, $status);
-
-            // Comprobar el resultado
-            if ($status === 0) {
-                return response()->json([
-                    'message' => "Se imprimio correctamente.",
-                    'error' => "",
-                    'success' => true,
-                    'data' => '',
-                ]);
-            } else {
-                return response()->json([
-                    'message' => "Hubo un error al imprimir el archivo PDF.",
-                    'error' => "",
-                    'success' => false,
-                    'data' => '',
-                ]);
-            }
-        } catch (\Throwable $th) {
-            Log::error($th->getMessage());
+        // Comprobar el resultado
+        if ($status === 0) { 
             return response()->json([
-                'message' => 'error del servidor',
-                'error' => $th->getMessage(),
+                'message' => "Se imprimio correctamente.",
+                'error' => "",
+                'success' => true,
+                'data' => '',
+            ]);
+        } else { 
+            return response()->json([
+                'message' => "Hubo un error al imprimir el archivo PDF.",
+                'error' => "",
                 'success' => false,
                 'data' => '',
             ]);
         }
+
+    } catch (\Throwable $th) {
+        Log::error($th->getMessage());
+        return response()->json([
+            'message' => 'error del servidor',
+            'error' => $th->getMessage(),
+            'success' => false,
+            'data' => '',
+        ]);
+    }
     }
 }
