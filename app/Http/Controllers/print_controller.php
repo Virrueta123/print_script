@@ -403,7 +403,7 @@ class print_controller extends Controller
             'stretchtext' => 0  // Evitar la distorsión
         );
         // Generar código de barras con un tamaño adecuado
-        $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', 74, 11, 4, $style, 'N'); 
+        $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', '', 11, 4, $style, 'N'); 
         $pdf->SetFont('helvetica', '', 7);
         $pdf->Cell(0, 1,$request->input("product_name"), 0, 1, 'C');
         $pdf->SetFont('helvetica', '', 7);
