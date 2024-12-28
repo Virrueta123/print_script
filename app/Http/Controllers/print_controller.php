@@ -360,39 +360,36 @@ class print_controller extends Controller
     {
 
         try {
-            // Create new PDF document (A4 size)
-            $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+
+
+            // Create new PDF document
+            $pdf = new TCPDF('P', 'mm', array(80, 40), true, 'UTF-8', false);
 
             // Set document information
             $pdf->SetCreator('Cautiva');
             $pdf->SetAuthor('');
             $pdf->SetTitle('Ticket');
 
-            // Remove default header and footer
+            // Set margins (slightly increased for better edge printing)
+            $pdf->SetMargins(4, 3, 4);
+
+            // Remove header and footer
             $pdf->setPrintHeader(false);
             $pdf->setPrintFooter(false);
 
-            // Set image scale factor (increased for better quality)
+            // Set higher DPI (600 DPI for better quality)
             $pdf->setImageScale(600 / 72);
 
             // Add a page
             $pdf->AddPage();
 
-            // Set font (increased size for better quality and file size)
-            $pdf->SetFont('helvetica', '', 9);
+            // Set font to a larger size and bold for better readability
+            $pdf->SetFont('helvetica', 'B', 10);
 
-            // Define the content area (40x30mm in the top-left corner)
-            $pdf->SetXY(10, 10); // 10mm from left, 10mm from top
+            // Add content
+            $pdf->Cell(0, 4, 'CAUTIVA', 0, 1, 'C');
 
-            // Create a clipping area
-            $pdf->StartTransform();
-            $pdf->Rect(10, 10, 40, 30, 'CNZ');
-
-            // Add content within the clipping area
-            $pdf->SetTextColor(0, 0, 0);
-            $pdf->MultiCell(40, 5, 'CAUTIVA', 0, 'C', false, 1, '', '', true, 0, false, true, 5, 'M');
-
-            // Generate barcode
+            // Set barcode style
             $style = array(
                 'position' => '',
                 'align' => 'C',
@@ -407,31 +404,29 @@ class print_controller extends Controller
                 'stretchtext' => 0
             );
 
-            // Adjust barcode size to fit within the 40x30mm area
-            $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', 38, 13, 0.4, $style, 'N');
+            // Generate barcode with increased size
+            $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', '', 15, 0.4, $style, 'N');
 
-            $pdf->SetXY(10, 32);
-            $pdf->MultiCell(40, 3, $request->input("product_name"), 0, 'C', false, 1, '', '', true, 0, false, true, 3, 'M');
+            // Set font for product name and price
+            $pdf->SetFont('helvetica', 'B', 9);
 
-            $pdf->SetXY(10, 35);
-            $pdf->MultiCell(40, 3, $request->input("price"), 0, 'C', false, 1, '', '', true, 0, false, true, 3, 'M');
+            // Add product name with increased line height
+            $pdf->Cell(0, 6, $request->input("product_name"), 0, 1, 'C');
 
-            // End the clipping area
-            $pdf->StopTransform();
+            // Add price with increased line height
+            $pdf->Cell(0, 6, $request->input("price"), 0, 1, 'C');
 
-            // Set PDF compression level (adjusted for better quality and file size)
+            // Set PDF viewer preferences for better print quality
+            $pdf->setViewerPreferences(array('PrintScaling' => 'None'));
+
+            // Disable compression to maintain quality
             $pdf->SetCompression(false);
+
+            // Set image compression quality to maximum
             $pdf->setJPEGQuality(100);
 
-            // Add some invisible content to increase file size
-            for ($i = 0; $i < 100; $i++) {
-                $pdf->SetXY(rand(50, 200), rand(50, 280));
-                $pdf->SetTextColor(255, 255, 255);
-                $pdf->Cell(10, 10, 'X', 0, 0, 'C');
-            }
-
-            // Output the PDF
-            $filePath = public_path("files/archivo1.pdf");
+            // File path
+            $filePath = public_path("files/ticket_high_quality.pdf");
 
             // Ensure the directory exists
             if (!file_exists(public_path('files'))) {
@@ -441,27 +436,8 @@ class print_controller extends Controller
             // Save the PDF
             $pdf->Output($filePath, 'F');
 
-            // Check file size and adjust if necessary
-            $fileSize = filesize($filePath);
-            $targetSize = 57 * 1024; // 57KB in bytes
+         
 
-            if ($fileSize < $targetSize) {
-                // If file is too small, add some padding
-                $padding = str_repeat('0', $targetSize - $fileSize);
-                file_put_contents($filePath, $padding, FILE_APPEND);
-            }
-
-            // Ruta completa del archivo en la carpeta public
-            $filePath = public_path("files/archivo1.pdf");
-
-            // Asegurarse de que el directorio existe
-            if (!file_exists(public_path('files'))) {
-                mkdir(public_path('files'), 0755, true);
-            }
-
-            // Guardar el PDF en la carpeta public
-            $pdf->Output($filePath, 'F');
- 
 
             // Ruta del archivo PDF
             $pdfFile = public_path('files/archivo1.pdf'); // Ajusta la ruta si es necesario
