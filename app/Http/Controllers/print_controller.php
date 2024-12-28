@@ -362,81 +362,65 @@ class print_controller extends Controller
         try {
 
 
-            // Create new PDF document
             $pdf = new TCPDF('P', 'mm', array(80, 40), true, 'UTF-8', false);
 
-            // Set document information
+            // Establecer información del documento
             $pdf->SetCreator('Cautiva');
             $pdf->SetAuthor('');
             $pdf->SetTitle('Ticket');
 
-            // Set margins (slightly increased for better edge printing)
-            $pdf->SetMargins(4, 3, 4);
+            // Establecer márgenes
+            $pdf->SetMargins(3, 2, 3);
 
-            // Remove header and footer
+            // Eliminar cabecera y pie de página
             $pdf->setPrintHeader(false);
             $pdf->setPrintFooter(false);
 
-            // Set higher DPI (600 DPI for better quality)
+            // Establecer resolución DPI más alta (300 DPI)
             $pdf->setImageScale(600 / 72);
 
-            // Add a page
+            // Agregar una página
             $pdf->AddPage();
 
-            // Set font to a larger size and bold for better readability
-            $pdf->SetFont('helvetica', 'B', 10);
+            // Establecer fuente
+            $pdf->SetFont('helvetica', '', 7);
 
-            // Add content
-            $pdf->Cell(0, 4, 'CAUTIVA', 0, 1, 'C');
+            // Agregar contenido
+            $pdf->Cell(0, 2, 'CAUTIVA', 0, 1, 'C');
 
-            // Set barcode style
+            // Establecer estilo del código de barras
             $style = array(
                 'position' => '',
                 'align' => 'C',
-                'stretch' => false,
-                'fitwidth' => true,
+                'stretch' => false,  // Desactivar la distorsión del texto
+                'fitwidth' => true,  // Ajustar el código de barras al ancho
                 'border' => false,
-                'fgcolor' => array(0, 0, 0),
-                'bgcolor' => false,
-                'text' => true,
+                'fgcolor' => array(0, 0, 0), // Color negro
+                'bgcolor' => false,  // Fondo transparente
+                'text' => true,  // Mostrar texto
                 'font' => 'helvetica',
-                'fontsize' => 8,
-                'stretchtext' => 0
+                'fontsize' => 7,  // Aumentar el tamaño de la fuente del texto
+                'stretchtext' => 0  // Evitar la distorsión
             );
+            // Generar código de barras con un tamaño adecuado
+            $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', '', 11, 4, $style, 'N');
+            $pdf->SetFont('helvetica', '', 7);
+            $pdf->Cell(0, 1, $request->input("product_name"), 0, 1, 'C');
+            $pdf->SetFont('helvetica', '', 7);
+            $pdf->Cell(0, 1, $request->input("price"), 0, 1, 'C');
 
-            // Generate barcode with increased size
-            $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', '', 15, 0.4, $style, 'N');
+            // Ruta completa del archivo en la carpeta public
+            $filePath = public_path("files/archivo1.pdf");
 
-            // Set font for product name and price
-            $pdf->SetFont('helvetica', 'B', 9);
-
-            // Add product name with increased line height
-            $pdf->Cell(0, 6, $request->input("product_name"), 0, 1, 'C');
-
-            // Add price with increased line height
-            $pdf->Cell(0, 6, $request->input("price"), 0, 1, 'C');
-
-            // Set PDF viewer preferences for better print quality
-            $pdf->setViewerPreferences(array('PrintScaling' => 'None'));
-
-            // Disable compression to maintain quality
-            $pdf->SetCompression(false);
-
-            // Set image compression quality to maximum
-            $pdf->setJPEGQuality(100);
-
-            // File path
-            $filePath = public_path("files/ticket_high_quality.pdf");
-
-            // Ensure the directory exists
+            // Asegurarse de que el directorio existe
             if (!file_exists(public_path('files'))) {
                 mkdir(public_path('files'), 0755, true);
             }
 
-            // Save the PDF
+            // Guardar el PDF en la carpeta public
             $pdf->Output($filePath, 'F');
 
-         
+ 
 
 
             // Ruta del archivo PDF
