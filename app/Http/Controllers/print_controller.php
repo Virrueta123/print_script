@@ -362,65 +362,82 @@ class print_controller extends Controller
         try {
 
 
-            $pdf = new TCPDF('P', 'mm', "A4", true, 'UTF-8', false);
-
-            // Establecer información del documento
+            $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+            // Set document information
             $pdf->SetCreator('Cautiva');
             $pdf->SetAuthor('');
             $pdf->SetTitle('Ticket');
-
-            // Establecer márgenes
-            $pdf->SetMargins(3, 2, 3);
-
-            // Eliminar cabecera y pie de página
+            // Remove default header and footer
             $pdf->setPrintHeader(false);
             $pdf->setPrintFooter(false);
+            // Increase image scale factor for better quality
+            $pdf->setImageScale(600 / 72); // Increased from 300/72
 
-            // Establecer resolución DPI más alta (300 DPI)
-            $pdf->setImageScale(600 / 72);
+            // Set higher image quality
+            $pdf->setJPEGQuality(100); // Increased from 75
 
-            // Agregar una página
+            // Add a page
             $pdf->AddPage();
+            // Use a larger font size
+            $pdf->SetFont('helvetica', '', 9); // Increased from 7
 
-            // Establecer fuente
-            $pdf->SetFont('helvetica', '', 7);
+            // Define the content area (40x30mm in the top-left corner)
+            $pdf->SetXY(10, 10);
+            // Create a clipping area
+            $pdf->StartTransform();
+            $pdf->Rect(10, 10, 40, 30, 'CNZ');
 
-            // Agregar contenido
-            $pdf->Cell(0, 2, 'CAUTIVA', 0, 4, '');
+            // Increase line width for better quality
+            $pdf->SetLineWidth(0.25);
 
-            // Establecer estilo del código de barras
+            // Add content within the clipping area
+            $pdf->MultiCell(40, 5, 'CAUTIVA', 0, 'C', false, 1, '', '', true, 0, false, true, 5, 'M');
+
+            // Generate barcode with higher quality settings
             $style = array(
                 'position' => '',
                 'align' => 'C',
-                'stretch' => false,  // Desactivar la distorsión del texto
-                'fitwidth' => true,  // Ajustar el código de barras al ancho
+                'stretch' => false,
+                'fitwidth' => true,
                 'border' => false,
-                'fgcolor' => array(0, 0, 0), // Color negro
-                'bgcolor' => false,  // Fondo transparente
-                'text' => true,  // Mostrar texto
+                'fgcolor' => array(0, 0, 0),
+                'bgcolor' => false,
+                'text' => true,
                 'font' => 'helvetica',
-                'fontsize' => 7,  // Aumentar el tamaño de la fuente del texto
-                'stretchtext' => 0  // Evitar la distorsión
+                'fontsize' => 8, // Increased from 6
+                'stretchtext' => 0
             );
-            // Generar código de barras con un tamaño adecuado
-            $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '',40, 11, 4, $style, 'N');
-            $pdf->SetFont('helvetica', '', 7);
-            $pdf->Cell(0, 1, $request->input("product_name"), 0, 1, '');
-            $pdf->SetFont('helvetica', '', 7);
-            $pdf->Cell(0, 1, $request->input("price"), 0, 1, '');
 
-            // Ruta completa del archivo en la carpeta public
-            $filePath = public_path("files/archivo1.pdf");
+            // Adjust barcode size and thickness
+            $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', 38, 12, 0.4, $style, 'N'); // Increased height and width
 
-            // Asegurarse de que el directorio existe
+            $pdf->SetXY(10, 32);
+            $pdf->MultiCell(40, 3, $request->input("product_name"), 0, 'C', false, 1, '', '', true, 0, false, true, 3, 'M');
+            $pdf->SetXY(10, 35);
+            $pdf->MultiCell(40, 3, $request->input("price"), 0, 'C', false, 1, '', '', true, 0, false, true, 3, 'M');
+
+            // End the clipping area
+            $pdf->StopTransform();
+
+            // Adjust PDF quality settings
+            $pdf->SetAutoPageBreak(true, 0);
+            $pdf->SetCompression(false); // Disable compression to increase file size
+            $pdf->setPDFVersion('1.7'); // Use newer PDF version for better quality
+
+            // Output the PDF
+            $filePath = public_path("files/ticket.pdf");
+            // Ensure the directory exists
             if (!file_exists(public_path('files'))) {
                 mkdir(public_path('files'), 0755, true);
             }
 
-            // Guardar el PDF en la carpeta public
+            // Set PDF properties for higher quality
+            $pdf->SetDisplayMode('fullpage', 'SinglePage', 'UseNone');
+
+            // Save the PDF with maximum quality
             $pdf->Output($filePath, 'F');
 
- 
+            // exit;
 
             // Ruta del archivo PDF
             $pdfFile = public_path('files/archivo1.pdf'); // Ajusta la ruta si es necesario
