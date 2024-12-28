@@ -405,9 +405,9 @@ class print_controller extends Controller
             // Generar código de barras con un tamaño adecuado
             $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '',40, 11, 4, $style, 'N');
             $pdf->SetFont('helvetica', '', 7);
-            $pdf->Cell(0, 1, $request->input("product_name"), 0, 1, 'C');
+            $pdf->Cell(0, 1, $request->input("product_name"), 0, 1, '');
             $pdf->SetFont('helvetica', '', 7);
-            $pdf->Cell(0, 1, $request->input("price"), 0, 1, 'C');
+            $pdf->Cell(0, 1, $request->input("price"), 0, 1, '');
 
             // Ruta completa del archivo en la carpeta public
             $filePath = public_path("files/archivo1.pdf");
