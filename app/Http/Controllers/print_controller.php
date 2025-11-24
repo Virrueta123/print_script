@@ -1,20 +1,12 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Utils\ticketera;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Mike42\Escpos\EscposImage;
-use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Mike42\Escpos\Printer;
-use Milon\Barcode\DNS1D;
-use Milon\Barcode\DNS2D;
-use Picqer\Barcode\BarcodeGeneratorPNG;
-use Milon\Barcode\Facades\Barcode;
-use Milon\Barcode\Facades\DNS1DFacade;
 use TCPDF;
 
 class print_controller extends Controller
@@ -29,7 +21,6 @@ class print_controller extends Controller
 
         $param = $request->all();
 
-
         try {
             ticketera::imprimir_gasto(
                 $param["fecha_impresion"],
@@ -42,20 +33,19 @@ class print_controller extends Controller
 
             return response()->json([
                 'message' => 'la impresion se ha ejecutado exitosamente',
-                'error' => '',
+                'error'   => '',
                 'success' => true,
-                'data' =>  '',
+                'data'    => '',
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'error del servidor',
-                'error' => $th->getMessage(),
+                'error'   => $th->getMessage(),
                 'success' => false,
-                'data' => '',
+                'data'    => '',
             ]);
         }
     }
-
 
     public function imprimir_desembolso(Request $request)
     {
@@ -77,21 +67,19 @@ class print_controller extends Controller
 
             return response()->json([
                 'message' => 'la impresion se ha ejecutado exitosamente',
-                'error' => '',
+                'error'   => '',
                 'success' => true,
-                'data' =>  '',
+                'data'    => '',
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'error del servidor',
-                'error' => $th->getMessage(),
+                'error'   => $th->getMessage(),
                 'success' => false,
-                'data' => '',
+                'data'    => '',
             ]);
         }
     }
-
-
 
     public function impresion_ingresos(Request $request)
     {
@@ -113,13 +101,11 @@ class print_controller extends Controller
 
         return response()->json([
             'message' => 'la impresion se ha ejecutado exitosamente',
-            'error' => '',
+            'error'   => '',
             'success' => true,
-            'data' =>  '',
+            'data'    => '',
         ]);
     }
-
-
 
     public function impresion_ingresos_grupal(Request $request)
     {
@@ -143,9 +129,9 @@ class print_controller extends Controller
 
         return response()->json([
             'message' => 'la impresion se ha ejecutado exitosamente',
-            'error' => '',
+            'error'   => '',
             'success' => true,
-            'data' =>  '',
+            'data'    => '',
         ]);
     }
 
@@ -154,32 +140,32 @@ class print_controller extends Controller
 
         try {
 
-            $Datax = $request->all();
-            $FechaCreacion = $Datax["FechaCreacion"];
-            $Nombres = $Datax["Nombres"];
-            $Dni = $Datax["Dni"];
-            $NumeroSolicitud = $Datax["NumeroSolicitud"];
-            $MCredito = $Datax["MCredito"];
-            $Fpago = $Datax["Fpago"];
-            $Cuotas = $Datax["Cuotas"];
-            $Interes = $Datax["Interes"];
-            $InteresDiario = $Datax["InteresDiario"];
+            $Datax            = $request->all();
+            $FechaCreacion    = $Datax["FechaCreacion"];
+            $Nombres          = $Datax["Nombres"];
+            $Dni              = $Datax["Dni"];
+            $NumeroSolicitud  = $Datax["NumeroSolicitud"];
+            $MCredito         = $Datax["MCredito"];
+            $Fpago            = $Datax["Fpago"];
+            $Cuotas           = $Datax["Cuotas"];
+            $Interes          = $Datax["Interes"];
+            $InteresDiario    = $Datax["InteresDiario"];
             $DiasTranscurrido = $Datax["DiasTranscurrido"];
-            $InteresTotal = $Datax["InteresTotal"];
-            $MontoRestante = $Datax["MontoRestante"];
-            $Total = $Datax["Total"];
-            $fecha_inicio = $Datax["fecha_inicio"];
-            $fecha_final = $Datax["fecha_final"];
+            $InteresTotal     = $Datax["InteresTotal"];
+            $MontoRestante    = $Datax["MontoRestante"];
+            $Total            = $Datax["Total"];
+            $fecha_inicio     = $Datax["fecha_inicio"];
+            $fecha_final      = $Datax["fecha_final"];
 
             $nombreImpresora = "XP-80CS";
-            $ruta_logo = public_path('dist/images/logo/logo_ticketera.png');
-            $ruta_pie = public_path('dist/images/logo/pie_ticketera.png');
+            $ruta_logo       = public_path('dist/images/logo/logo_ticketera.png');
+            $ruta_pie        = public_path('dist/images/logo/pie_ticketera.png');
 
             // Conecta con la impresora
-            $conector = new WindowsPrintConnector($nombreImpresora);
+            $conector  = new WindowsPrintConnector($nombreImpresora);
             $impresora = new Printer($conector);
 
-            $imagen = EscposImage::load($ruta_logo, false);
+            $imagen     = EscposImage::load($ruta_logo, false);
             $imagen_pie = EscposImage::load($ruta_pie, false);
             // Imprime la imagen
             $impresora->bitImage($imagen);
@@ -206,7 +192,6 @@ class print_controller extends Controller
             $impresora->text("\n");
             //////
 
-
             //////
             $impresora->setEmphasis(true);
             $impresora->setTextSize(1, 1);
@@ -218,13 +203,10 @@ class print_controller extends Controller
             $impresora->text("\n");
             //////
 
-
-
             $impresora->setEmphasis(true);
             $impresora->setTextSize(2, 1);
             $impresora->text("Información del préstamo\n");
             $impresora->text("\n");
-
 
             $impresora->setEmphasis(false);
             $impresora->setTextSize(1, 1);
@@ -296,7 +278,7 @@ class print_controller extends Controller
             $impresora->setTextSize(1.3, 1);
             $impresora->text($DiasTranscurrido . "\n");
             $impresora->text("\n");
-            ////// 
+            //////
 
             //////
             $impresora->setEmphasis(true);
@@ -307,7 +289,7 @@ class print_controller extends Controller
             $impresora->setTextSize(1.3, 1);
             $impresora->text($InteresTotal . "\n");
             $impresora->text("\n");
-            ////// 
+            //////
 
             //////
             $impresora->setEmphasis(true);
@@ -340,29 +322,27 @@ class print_controller extends Controller
 
             return response()->json([
                 'message' => 'operacion exitosa',
-                'error' => '',
+                'error'   => '',
                 'success' => true,
-                'data' => ""
+                'data'    => "",
             ]);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return response()->json([
                 'message' => 'error del servidor',
-                'error' => $th->getMessage(),
+                'error'   => $th->getMessage(),
                 'success' => false,
-                'data' => '',
+                'data'    => '',
             ]);
         }
     }
-
 
     public function impresion_prueba_cautiva(Request $request)
     {
 
         try {
 
-
-            $pdf = new TCPDF('P', 'mm', array(80, 40), true, 'UTF-8', false);
+            $pdf = new TCPDF('P', 'mm', [80, 40], true, 'UTF-8', false);
 
             // Establecer información del documento
             $pdf->SetCreator('Cautiva');
@@ -389,19 +369,19 @@ class print_controller extends Controller
             $pdf->Cell(0, 2, 'CAUTIVA', 0, 1, 'C');
 
             // Establecer estilo del código de barras
-            $style = array(
-                'position' => '',
-                'align' => 'C',
-                'stretch' => false,  // Desactivar la distorsión del texto
-                'fitwidth' => true,  // Ajustar el código de barras al ancho
-                'border' => false,
-                'fgcolor' => array(0, 0, 0), // Color negro
-                'bgcolor' => false,  // Fondo transparente
-                'text' => true,  // Mostrar texto
-                'font' => 'helvetica',
-                'fontsize' => 7,  // Aumentar el tamaño de la fuente del texto
-                'stretchtext' => 0  // Evitar la distorsión
-            );
+            $style = [
+                'position'    => '',
+                'align'       => 'C',
+                'stretch'     => false, // Desactivar la distorsión del texto
+                'fitwidth'    => true,  // Ajustar el código de barras al ancho
+                'border'      => false,
+                'fgcolor'     => [0, 0, 0], // Color negro
+                'bgcolor'     => false,     // Fondo transparente
+                'text'        => true,      // Mostrar texto
+                'font'        => 'helvetica',
+                'fontsize'    => 7, // Aumentar el tamaño de la fuente del texto
+                'stretchtext' => 0, // Evitar la distorsión
+            ];
             // Generar código de barras con un tamaño adecuado
             $pdf->write1DBarcode($request->input("barcode"), 'C128', '', '', '', 11, 4, $style, 'N');
             $pdf->SetFont('helvetica', '', 7);
@@ -413,23 +393,20 @@ class print_controller extends Controller
             $filePath = public_path("files/archivo1.pdf");
 
             // Asegurarse de que el directorio existe
-            if (!file_exists(public_path('files'))) {
+            if (! file_exists(public_path('files'))) {
                 mkdir(public_path('files'), 0755, true);
             }
 
             // Guardar el PDF en la carpeta public
             $pdf->Output($filePath, 'F');
 
- 
-
-
-            // Ruta del archivo PDF
+                                                          // Ruta del archivo PDF
             $pdfFile = public_path('files/archivo1.pdf'); // Ajusta la ruta si es necesario
 
-            // Nombre de la impresora
+                                                          // Nombre de la impresora
             $printerName = '\\\\DESKTOP-JOV5EM7\\HL3200'; // Asegúrate de que el nombre de la impresora esté bien
 
-            // Ruta del ejecutable de SumatraPDF
+                                                                             // Ruta del ejecutable de SumatraPDF
             $sumatraPdfPath = '"C:\\programas\\SumatraPDF\\SumatraPDF.exe"'; // Asegúrate de que la ruta del ejecutable sea correcta
 
             // Comando para imprimir el PDF
@@ -442,26 +419,208 @@ class print_controller extends Controller
             if ($status === 0) {
                 return response()->json([
                     'message' => "Se imprimio correctamente.",
-                    'error' => "",
+                    'error'   => "",
                     'success' => true,
-                    'data' => '',
+                    'data'    => '',
                 ]);
             } else {
                 return response()->json([
                     'message' => "Hubo un error al imprimir el archivo PDF.",
-                    'error' => "",
+                    'error'   => "",
                     'success' => false,
-                    'data' => '',
+                    'data'    => '',
                 ]);
             }
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return response()->json([
                 'message' => 'error del servidor',
-                'error' => $th->getMessage(),
+                'error'   => $th->getMessage(),
                 'success' => false,
-                'data' => '',
+                'data'    => '',
             ]);
         }
+    }
+
+    public function impimir_voucher_cautiva_comprobante(Request $request)
+    {
+
+        $Val = $request->all();
+
+        try {
+
+            $nombreImpresora = "XP-80C"; // Cambia si tu impresora tiene otro nombre
+            $ruta_logo       = public_path('dist/images/logo/logo_cautiva.png');
+
+            $conector  = new WindowsPrintConnector($nombreImpresora);
+            $impresora = new Printer($conector);
+
+            // ========================================
+            // LOGO CENTRADO
+            // ========================================
+            if (file_exists($ruta_logo)) {
+                $logo = EscposImage::load($ruta_logo, false);
+                $impresora->setJustification(Printer::JUSTIFY_CENTER);
+                $impresora->bitImage($logo);
+                $impresora->feed(1);
+            }
+
+            // ========================================
+            // ENCABEZADO DE LA EMPRESA
+            // ========================================
+            $impresora->setJustification(Printer::JUSTIFY_CENTER);
+            $impresora->setEmphasis(true);
+            $impresora->setTextSize(1, 2);
+            $impresora->text("CAUTIVA\n");
+            $impresora->setTextSize(1, 1);
+            $impresora->setEmphasis(false);
+            $impresora->text("MODA Y ESTILO\n");
+            $impresora->text("CASH TIME E.I.R.L\n");
+            $impresora->text("JR. BOLOGNESI 523 SAN MARTIN - TARAPOTO\n");
+            $impresora->text("RUC: 20608330284\n");
+            $impresora->feed(1);
+
+            // ========================================
+            // TÍTULO Y NÚMERO DE NOTA
+            // ========================================
+            $impresora->setTextSize(2, 2);
+            $impresora->setEmphasis(true);
+            $impresora->text("NOTA DE VENTA\n");
+            $impresora->setTextSize(1, 1);
+            $impresora->text("Nº " . $Val["serie"] . "-" . $Val["correlativo"] . "\n"); // Aquí puedes poner $venta->serie . '-' . $venta->numero
+            $impresora->setEmphasis(false);
+            $impresora->feed(1);
+
+            // ========================================
+            // FECHA Y CLIENTE
+            // ========================================
+            $impresora->setJustification(Printer::JUSTIFY_LEFT);
+            $impresora->text("Fecha: " . $Val["fecha"] . "\n");
+            $impresora->text("Cliente: " . $Val["cliente"] . "\n");
+            $impresora->text("--------------------------------------------\n");
+
+            // ========================================
+            // DETALLE DE PRODUCTOS (FORMATO MODERNO Y COMPACTO)
+            // ========================================
+            $impresora->setEmphasis(true);
+            $impresora->text("DESCRIPCIÓN\n");
+            $impresora->setEmphasis(false);
+            $impresora->text("--------------------------------------------\n");
+
+            // AQUÍ PON TUS PRODUCTOS REALES (ejemplo con los tuyos)
+            $detalles = json_decode($Val["detalles"], true);
+
+ 
+            $totalGeneral = 0;
+
+            foreach ($detalles as $item) {
+                $producto = $item['producto'] ?? 'Sin nombre';
+                $cantidad = intval($item['cantidad'] ?? 1);
+                $precio   = floatval($item['precio'] ?? 0);
+                $subtotal = $cantidad * $precio;
+                $totalGeneral += $subtotal;
+
+                // Nombre del producto
+                $impresora->text(substr($producto, 0, 42) . "\n");
+
+                // Cantidad x Precio → Subtotal
+                $linea = $cantidad . " x S/ " . number_format($precio, 2);
+                $linea = str_pad($linea, 23);
+                $sub   = "S/ " . number_format($subtotal, 2);
+                $sub   = str_pad($sub, 12, " ", STR_PAD_LEFT);
+
+                $impresora->text("   " . $linea . $sub . "\n");
+            }
+
+            $impresora->text("--------------------------------------------\n");
+
+            // ========================================
+            // TOTAL FINAL (GRANDE Y DESTACADO)
+            // ========================================
+            $impresora->setJustification(Printer::JUSTIFY_RIGHT);
+            $impresora->setTextSize(1, 1);
+            $impresora->setEmphasis(true);
+            $impresora->text("TOTAL: S/ " . number_format($Val["total"], 2) . "\n");
+            $impresora->setTextSize(1, 1);
+            $impresora->setEmphasis(false);
+
+            // ========================================
+            // SON EN LETRAS
+            // ========================================
+            $impresora->setJustification(Printer::JUSTIFY_CENTER);
+            $impresora->text("SON: " . $this->numeroALetras($Val["total"]) . " SOLES\n");
+            $impresora->feed(1);
+
+            // ========================================
+            // MENSAJE FINAL Y QR
+            // ========================================
+            $impresora->text("¡Gracias por su compra!\n");
+
+            // ========================================
+            // CORTE DE PAPEL
+            // ========================================
+            $impresora->cut();
+            $impresora->close();
+
+            //codigo 200
+            return response()->json(['success' => true, 'message' => 'Ticket impreso correctamente', "code" => 200], 200);
+        } catch (\Exception $e) {
+            Log::error("Error impresión: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al imprimir',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+
+    }
+
+// ========================================
+// FUNCIÓN: CONVERTIR NÚMERO A LETRAS (PERÚ)
+// ========================================
+    public function numeroALetras($numero)
+    {
+        $unidades = ["", "UN", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE"];
+        $decenas  = ["", "DIEZ", "VEINTE", "TREINTA", "CUARENTA", "CINCUENTA", "SESENTA", "SETENTA", "OCHENTA", "NOVENTA"];
+        $centenas = ["", "CIENTO", "DOSCIENTOS", "TRESCIENTOS", "CUATROCIENTOS", "QUINIENTOS", "SEISCIENTOS", "SETECIENTOS", "OCHOCIENTOS", "NOVECIENTOS"];
+
+        $entero  = floor($numero);
+        $decimal = round(($numero - $entero) * 100);
+
+        if ($entero == 0) {
+            return "CERO";
+        }
+
+        $letras = "";
+
+        if ($entero >= 100) {
+            $letras .= $centenas[floor($entero / 100)] . " ";
+            $entero %= 100;
+        }
+        if ($entero >= 11 && $entero <= 19) {
+            $teens = ["ONCE", "DOCE", "TRECE", "CATORCE", "QUINCE", "DIECISEIS", "DIECISIETE", "DIECIOCHO", "DIECINUEVE"];
+            $letras .= $teens[$entero - 11] . " ";
+        } else {
+            if ($entero >= 20) {
+                $letras .= $decenas[floor($entero / 10)];
+                if ($entero % 10 > 0) {
+                    $letras .= " Y ";
+                }
+
+                $entero %= 10;
+            }
+            if ($entero > 0 && $entero < 10) {
+                $letras .= $unidades[$entero] . " ";
+            }
+        }
+
+        $letras = trim($letras);
+        if ($decimal > 0) {
+            $letras .= " Y " . str_pad($decimal, 2, "0", STR_PAD_LEFT) . "/100";
+        } else {
+            $letras .= " Y 00/100";
+        }
+
+        return $letras;
     }
 }

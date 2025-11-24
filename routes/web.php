@@ -27,6 +27,10 @@ Route::post('/ipc', [App\Http\Controllers\print_controller::class, 'impresion_pr
 
 Route::get('/impresion_voucher_prestamo_cancelado', [App\Http\Controllers\print_controller::class, 'impresion_voucher_prestamo_cancelado']);
 
+// para imprimir voucher de cautiva para comprobante de venta
+
+Route::post('/impimir_voucher_cautiva_comprobante', [App\Http\Controllers\print_controller::class, 'impimir_voucher_cautiva_comprobante']);
+
 Route::get('/', function () {
     return view('welcome');
 });
